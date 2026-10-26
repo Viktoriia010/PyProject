@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% if title %}{{title}} {% else %} Default Page {%endif%}</title>
+</head>
+<body>
+    <h2>Python Framework - Flask</h2>
+    <ul>
+        {% for el in menu %}
+        <li>{{el}}</li>
+        {%endfor%}
+
+    </ul>
+</body>
+</html>
