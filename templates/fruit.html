@@ -1,0 +1,468 @@
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Манго — FruitMarket</title>
+
+  <style>
+    :root {
+      --green: #198449;
+      --dark: #126638;
+      --text: #24364b;
+      --muted: #78858e;
+      --bg: #f7f9f6;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    header {
+      height: 72px;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 7%;
+      border-bottom: 1px solid #e9eee9;
+    }
+
+    .logo {
+      color: var(--green);
+      font-size: 24px;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    nav {
+      display: flex;
+      gap: 28px;
+    }
+
+    nav a {
+      color: #526173;
+      text-decoration: none;
+    }
+
+    nav a:hover {
+      color: var(--green);
+    }
+
+    .cart {
+      background: #eaf5ed;
+      color: var(--green);
+      padding: 11px 16px;
+      border-radius: 9px;
+      font-weight: bold;
+    }
+
+    main {
+      max-width: 1120px;
+      margin: 28px auto;
+      padding: 0 22px;
+    }
+
+    .breadcrumbs {
+      color: var(--muted);
+      margin-bottom: 24px;
+    }
+
+    .breadcrumbs a {
+      color: var(--green);
+      text-decoration: none;
+    }
+
+    .product {
+      display: grid;
+      grid-template-columns: 1.05fr 1fr;
+      gap: 48px;
+      background: white;
+      padding: 28px;
+      border-radius: 18px;
+      box-shadow: 0 5px 25px #263c2510;
+    }
+
+    .image-area {
+      background: linear-gradient(145deg, #fff8e7, #f1f7e8);
+      border-radius: 14px;
+      min-height: 400px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .image-area img {
+      width: 92%;
+      height: 360px;
+      object-fit: contain;
+      mix-blend-mode: multiply;
+      transition: transform .3s;
+    }
+
+    .image-area img:hover {
+      transform: scale(1.05);
+    }
+
+    .tag {
+      position: absolute;
+      top: 18px;
+      left: 18px;
+      background: #198449;
+      color: white;
+      padding: 8px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .details {
+      padding: 12px 4px;
+    }
+
+    .category {
+      color: var(--green);
+      font-weight: bold;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-size: clamp(30px, 4vw, 42px);
+      margin-bottom: 15px;
+      letter-spacing: -1px;
+    }
+
+    .rating {
+      color: #f4ad21;
+      margin-bottom: 24px;
+      font-size: 15px;
+    }
+
+    .rating span {
+      color: var(--muted);
+      font-size: 12px;
+      margin-left: 7px;
+    }
+
+    .description {
+      color: #687782;
+      line-height: 1.8;
+      margin-bottom: 24px;
+    }
+
+    .price {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 22px;
+    }
+
+    .price strong {
+      color: var(--green);
+      font-size: 34px;
+    }
+
+    .price span {
+      color: var(--muted);
+    }
+
+    .availability {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--green);
+      margin-bottom: 24px;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #32a467;
+    }
+
+    .purchase {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 26px;
+    }
+
+    .quantity {
+      display: flex;
+      align-items: center;
+      border: 1px solid #dce5dd;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .quantity button {
+      border: none;
+      background: white;
+      width: 38px;
+      height: 46px;
+      font-size: 20px;
+      color: var(--green);
+      cursor: pointer;
+    }
+
+    .quantity input {
+      width: 42px;
+      border: none;
+      text-align: center;
+      font-size: 15px;
+      outline: none;
+    }
+
+    .add-button {
+      flex: 1;
+      background: var(--green);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background .2s;
+    }
+
+    .add-button:hover {
+      background: var(--dark);
+    }
+
+    .benefits {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      border-top: 1px solid #edf0ed;
+      padding-top: 22px;
+    }
+
+    .benefit {
+      text-align: center;
+      color: #667580;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .benefit b {
+      display: block;
+      font-size: 23px;
+      margin-bottom: 7px;
+    }
+
+    .info {
+      margin-top: 25px;
+      padding: 28px;
+      background: white;
+      border-radius: 14px;
+    }
+
+    .info h2 {
+      font-size: 21px;
+      margin-bottom: 18px;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+    }
+
+    .info-item {
+      padding: 16px;
+      background: #f6f9f5;
+      border-radius: 9px;
+    }
+
+    .info-item span {
+      color: var(--muted);
+      display: block;
+      margin-bottom: 8px;
+      font-size: 12px;
+    }
+
+    .info-item strong {
+      font-size: 14px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 28px;
+      color: #8a9690;
+    }
+
+    @media (max-width: 700px) {
+      header {
+        height: auto;
+        padding: 18px;
+        gap: 14px;
+        flex-wrap: wrap;
+      }
+
+      nav {
+        order: 3;
+        width: 100%;
+        gap: 18px;
+        overflow-x: auto;
+      }
+
+      main {
+        margin: 18px auto;
+        padding: 0 12px;
+      }
+
+      .product {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 15px;
+      }
+
+      .image-area {
+        min-height: 280px;
+      }
+
+      .image-area img {
+        height: 270px;
+      }
+
+      .details {
+        padding: 8px 2px;
+      }
+
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .benefits {
+        gap: 5px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <a href="/fruits" class="logo">🍊 FruitMarket</a>
+
+  <nav>
+        {% for el in menu2 %}
+        <a>{{el}}</a>
+        {%endfor%}
+  </nav>
+  <div class="cart">
+    🛒 Кошик <span id="cartCount">0</span>
+  </div>
+</header>
+
+<main>
+  <div class="breadcrumbs">
+    <a href="/">Головна</a> /
+    <a href="/fruits">Фрукти</a> /
+    {{product.title}}
+  </div>
+
+  <section class="product">
+    <div class="image-area">
+      <img
+        src="{{ product['image'] }}"
+         alt={{product.title}}
+      >
+    </div>
+
+    <div class="details">
+      <h1>{{product.title}}</h1>
+
+      <div class="rating">
+        ★★★★★ <span>{{product.raiting}} · {{product.reviews}} відгуків</span>
+      </div>
+
+
+      <div class="price">
+        <strong>{{product.price}} грн</strong>
+        <span>/ кг</span>
+      </div>
+
+      <div class="availability">
+        <span class="dot"></span>
+        Є в наявності
+      </div>
+
+      <div class="purchase">
+        <div class="quantity">
+          <button id="minus" aria-label="Зменшити кількість">−</button>
+          <input id="quantity" type="number" value="1" min="1" max="99">
+          <button id="plus" aria-label="Збільшити кількість">+</button>
+        </div>
+
+        <button class="add-button" id="addToCart">
+          🛒 Додати в кошик
+        </button>
+      </div>
+
+      <div class="benefits">
+        <div class="benefit">
+          <b>🌿</b>
+          Натуральний<br>смак
+        </div>
+        <div class="benefit">
+          <b>🚚</b>
+          Швидка<br>доставка
+        </div>
+        <div class="benefit">
+          <b>🍃</b>
+          Свіжі<br>фрукти
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  © 2026 FruitMarket · Свіжість у кожному шматочку 🍃
+</footer>
+
+<script>
+  const quantity = document.getElementById("quantity");
+  const cartCount = document.getElementById("cartCount");
+  const addButton = document.getElementById("addToCart");
+
+  let cart = 0;
+
+  document.getElementById("minus").addEventListener("click", () => {
+    quantity.value = Math.max(1, (Number(quantity.value) || 1) - 1);
+  });
+
+  document.getElementById("plus").addEventListener("click", () => {
+    quantity.value = Math.min(99, (Number(quantity.value) || 1) + 1);
+  });
+
+  quantity.addEventListener("change", () => {
+    quantity.value = Math.min(99, Math.max(1, Number(quantity.value) || 1));
+  });
+
+  addButton.addEventListener("click", () => {
+    cart += Math.min(99, Math.max(1, Number(quantity.value) || 1));
+    cartCount.textContent = cart;
+
+    addButton.textContent = "✓ Додано до кошика!";
+    setTimeout(() => {
+      addButton.textContent = "🛒 Додати в кошик";
+    }, 1200);
+  });
+</script>
+
+</body>
+</html>

@@ -379,6 +379,16 @@ h1 {
   min-width: 0;
   transition: .2s;
 }
+.product-link {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+}
+
+.product-link .product-card {
+    height: 100%;
+    cursor: pointer;
+}
 
 .product-card:hover {
   transform: translateY(-3px);
@@ -627,6 +637,53 @@ footer {
     grid-row: auto;
     width: 100%;
   }
+
+}
+
+.add-fruit-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    width: 100%;
+    margin-top: 18px;
+    padding: 12px 14px;
+
+    background: #198449;
+    color: white;
+    border: none;
+    border-radius: 7px;
+
+    font-size: 13px;
+    font-weight: bold;
+
+    box-shadow: 0 3px 8px rgba(25, 132, 73, 0.15);
+    transition: background 0.2s ease,
+                transform 0.2s ease,
+                box-shadow 0.2s ease;
+}
+
+.add-fruit-btn:hover {
+    background: #08743a;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 12px rgba(25, 132, 73, 0.25);
+}
+
+.add-fruit-btn:active {
+    transform: translateY(0);
+}
+
+.plus-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+
+    background: rgba(255, 255, 255, 0.18);
+    border-radius: 50%;
+    font-size: 10px;
+    line-height: 1;
 }
 </style>
 </head>
@@ -692,7 +749,7 @@ footer {
 
       <div class="category-list" id="categoryList">
            {% for el in categories %}
-        <button class="category selected">
+        <button class="category selected " data-category="{{ el['data-category'] }}">
           <span class="category-name">{{el.name}}</span>
           <span class="count">{{el.count}}</span>
         </button>
@@ -725,6 +782,13 @@ footer {
           <option value="name">Назвою</option>
         </select>
       </section>
+
+
+      <button class="add-fruit-btn" onclick="window.location.href='/add-fruit';">
+          <span class="plus-icon">+</span>
+          Додати фрукт
+      </button>
+
     </aside>
 
     <section class="catalog-content">
@@ -742,7 +806,38 @@ footer {
         </div>
       </div>
 
-      <div class="product-grid" id="productGrid"></div>
+      <div class="product-grid" id="productGrid">
+      {%for product in products%}
+
+        <a href="{{ url_for('fruit', id=product.id) }}" class="product-link">
+         <article class="product-card" >
+          <img
+            class="product-image"
+            src="{{ product.image }}"
+            alt={{product.title}}
+            loading="lazy"
+            onerror="this.onerror=null;this.src={ product:['image'] }"
+          >
+
+          <h3 class="product-title">{{product.title}}</h3>
+
+          <div class="price">
+            {{product.price}} грн <span>/ кг</span>
+          </div>
+
+          <div class="rating">
+            <span class="stars">★★★★★</span>
+            <small>{{product.rating}}({{product.reviews}})</small>
+          </div>
+
+          <button class="add-btn" data-add={{product.title}}>
+            <span>🛒</span> Додати в кошик
+          </button>
+        </article>
+          </a>
+          {%endfor%}
+
+      </div>
 
       <div class="empty-state" id="emptyState">
         Нічого не знайдено. Спробуйте змінити пошуковий запит.
@@ -757,233 +852,235 @@ footer {
 </footer>
 
 <script>
-const products = [
-  {
-    name: "Банани",
-    price: 45,
-    category: "tropical",
-    rating: 4.8,
-    reviews: 124,
-    image: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?auto=format&fit=crop&w=600&q=85"
-  },
-  {
-    name: "Яблука",
-    price: 35,
-    category: "apples",
-    rating: 4.7,
-    reviews: 98,
-    image: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?auto=format&fit=crop&w=600&q=85"
-  },
-  {
-    name: "Апельсини",
-    price: 55,
-    category: "citrus",
-    rating: 4.9,
-    reviews: 156,
-    image: "https://images.unsplash.com/photo-1547514701-42782101795e?auto=format&fit=crop&w=600&q=85"
-  },
-  {
-    name: "Полуниця",
-    price: 120,
-    category: "berries",
-    rating: 4.8,
-    reviews: 87,
-    image: "https://images.unsplash.com/photo-1464965911861-746a04b4bca6?auto=format&fit=crop&w=600&q=85"
-  },
-  {
-    name: "Чорниця",
-    price: 150,
-    category: "berries",
-    rating: 4.9,
-    reviews: 72,
-    image: "https://images.unsplash.com/photo-1498557850523-fd3d118b962e?auto=format&fit=crop&w=600&q=85"
-  },
-  {
-    name: "Виноград",
-    price: 95,
-    category: "berries",
-    rating: 4.6,
-    reviews: 64,
-    image: "https://images.unsplash.com/photo-1537640538966-79f369143f8f?auto=format&fit=crop&w=600&q=85"
-  },
-  {
-    name: "Ківі",
-    price: 80,
-    category: "tropical",
-    rating: 4.7,
-    reviews: 63,
-    image: "https://images.unsplash.com/photo-1585059895524-72359e06133a?auto=format&fit=crop&w=600&q=85"
-  },
-  {
-    name: "Манго",
-    price: 140,
-    category: "tropical",
-    rating: 4.8,
-    reviews: 45,
-    image: "https://images.unsplash.com/photo-1553279768-865429fa0078?auto=format&fit=crop&w=600&q=85"
-  }
-];
-
-let activeCategory = "all";
-let cart = 3;
-let listMode = false;
-
-const grid = document.getElementById("productGrid");
-const searchInput = document.getElementById("searchInput");
-const availableOnly = document.getElementById("availableOnly");
-const sortSelect = document.getElementById("sortSelect");
-
-function renderProducts() {
-  const query = searchInput.value
-    .trim()
-    .toLocaleLowerCase("uk");
-
-  let visible = products.filter(product => {
-    const matchesCategory =
-      activeCategory === "all" ||
-      product.category === activeCategory;
-
-    const matchesSearch =
-      product.name.toLocaleLowerCase("uk").includes(query);
-
-    const matchesAvailability =
-      !availableOnly.checked || product.price !== 150;
-
-    return matchesCategory &&
-      matchesSearch &&
-      matchesAvailability;
-  });
-
-  if (sortSelect.value === "price-asc") {
-    visible.sort((a, b) => a.price - b.price);
-  }
-
-  if (sortSelect.value === "price-desc") {
-    visible.sort((a, b) => b.price - a.price);
-  }
-
-  if (sortSelect.value === "name") {
-    visible.sort((a, b) =>
-      a.name.localeCompare(b.name, "uk")
-    );
-  }
-
-  grid.innerHTML = visible.map(product => `
-    <article class="product-card">
-      <img
-        class="product-image"
-        src="${product.image}"
-        alt="${product.name}"
-        loading="lazy"
-        onerror="this.onerror=null;this.src='https://placehold.co/600x400/f5f8f5/198449?text=${encodeURIComponent(product.name)}'"
-      >
-
-      <h3 class="product-title">${product.name}</h3>
-
-      <div class="price">
-        ${product.price} грн <span>/ кг</span>
-      </div>
-
-      <div class="rating">
-        <span class="stars">★★★★★</span>
-        <small>${product.rating} (${product.reviews})</small>
-      </div>
-
-      <button class="add-btn" data-add="${product.name}">
-        <span>🛒</span> Додати в кошик
-      </button>
-    </article>
-  `).join("");
-
-  document.getElementById("resultsCount").textContent =
-    `Знайдено ${visible.length} товарів`;
-
-  document.getElementById("emptyState").style.display =
-    visible.length ? "none" : "block";
-
-  grid.style.display = visible.length ? "grid" : "none";
-
-  grid.classList.toggle("list-view", listMode);
-}
-
-// Фільтрація за категоріями
-
-document.getElementById("categoryList")
-  .addEventListener("click", event => {
-    const button = event.target.closest("[data-category]");
-
-    if (!button) return;
-
-    activeCategory = button.dataset.category;
-
-    document.querySelectorAll(".category").forEach(item => {
-      item.classList.toggle("selected", item === button);
-    });
-
-    renderProducts();
-  });
-
-// Пошук
-
-document.getElementById("searchForm")
-  .addEventListener("submit", event => {
-    event.preventDefault();
-    renderProducts();
-  });
-
-searchInput.addEventListener("input", renderProducts);
-
-// Фільтр наявності
-
-availableOnly.addEventListener("change", renderProducts);
-
-// Сортування
-
-sortSelect.addEventListener("change", renderProducts);
-
-// Перемикання вигляду
-
-document.getElementById("gridBtn").addEventListener("click", () => {
-  listMode = false;
-
-  document.getElementById("gridBtn").classList.add("active");
-  document.getElementById("listBtn").classList.remove("active");
-
-  renderProducts();
-});
-
-document.getElementById("listBtn").addEventListener("click", () => {
-  listMode = true;
-
-  document.getElementById("listBtn").classList.add("active");
-  document.getElementById("gridBtn").classList.remove("active");
-
-  renderProducts();
-});
-
-// Додавання до кошика
-
-grid.addEventListener("click", event => {
-  const button = event.target.closest("[data-add]");
-
-  if (!button) return;
-
-  cart++;
-
-  document.getElementById("cartCount").textContent = cart;
-
-  const originalText = button.innerHTML;
-
-  button.innerHTML = "✓ Додано";
-
-  setTimeout(() => {
-    button.innerHTML = originalText;
-  }, 900);
-});
-
-// Початкове відображення товарів
-
-renderProducts();
+// const products = [
+//   {
+//     name: "Банани",
+//     price: 45,
+//     category: "tropical",
+//     rating: 4.8,
+//     reviews: 124,
+//     image: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?auto=format&fit=crop&w=600&q=85"
+//   },
+//   {
+//     name: "Яблука",
+//     price: 35,
+//     category: "apples",
+//     rating: 4.7,
+//     reviews: 98,
+//     image: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?auto=format&fit=crop&w=600&q=85"
+//   },
+//   {
+//     name: "Апельсини",
+//     price: 55,
+//     category: "citrus",
+//     rating: 4.9,
+//     reviews: 156,
+//     image: "https://images.unsplash.com/photo-1547514701-42782101795e?auto=format&fit=crop&w=600&q=85"
+//   },
+//   {
+//     name: "Полуниця",
+//     price: 120,
+//     category: "berries",
+//     rating: 4.8,
+//     reviews: 87,
+//     image: "https://images.unsplash.com/photo-1464965911861-746a04b4bca6?auto=format&fit=crop&w=600&q=85"
+//   },
+//   {
+//     name: "Чорниця",
+//     price: 150,
+//     category: "berries",
+//     rating: 4.9,
+//     reviews: 72,
+//     image: "https://images.unsplash.com/photo-1498557850523-fd3d118b962e?auto=format&fit=crop&w=600&q=85"
+//   },
+//   {
+//     name: "Виноград",
+//     price: 95,
+//     category: "berries",
+//     rating: 4.6,
+//     reviews: 64,
+//     image: "https://images.unsplash.com/photo-1537640538966-79f369143f8f?auto=format&fit=crop&w=600&q=85"
+//   },
+//   {
+//     name: "Ківі",
+//     price: 80,
+//     category: "tropical",
+//     rating: 4.7,
+//     reviews: 63,
+//     image: "https://images.unsplash.com/photo-1585059895524-72359e06133a?auto=format&fit=crop&w=600&q=85"
+//   },
+//   {
+//     name: "Манго",
+//     price: 140,
+//     category: "tropical",
+//     rating: 4.8,
+//     reviews: 45,
+//     image: "https://images.unsplash.com/photo-1553279768-865429fa0078?auto=format&fit=crop&w=600&q=85"
+//   }
+// ];
+//
+// let activeCategory = "all";
+// let cart = 3;
+// let listMode = false;
+//
+// const grid = document.getElementById("productGrid");
+// const searchInput = document.getElementById("searchInput");
+// const availableOnly = document.getElementById("availableOnly");
+// const sortSelect = document.getElementById("sortSelect");
+//
+// function renderProducts() {
+//   const query = searchInput.value
+//     .trim()
+//     .toLocaleLowerCase("uk");
+//
+//   let visible = products.filter(product => {
+//     const matchesCategory =
+//       activeCategory === "all" ||
+//       product.category === activeCategory;
+//
+//     const matchesSearch =
+//       product.name.toLocaleLowerCase("uk").includes(query);
+//
+//     const matchesAvailability =
+//       !availableOnly.checked || product.price !== 150;
+//
+//     return matchesCategory &&
+//       matchesSearch &&
+//       matchesAvailability;
+//   });
+//
+//   if (sortSelect.value === "price-asc") {
+//     visible.sort((a, b) => a.price - b.price);
+//   }
+//
+//   if (sortSelect.value === "price-desc") {
+//     visible.sort((a, b) => b.price - a.price);
+//   }
+//
+//   if (sortSelect.value === "name") {
+//     visible.sort((a, b) =>
+//       a.name.localeCompare(b.name, "uk")
+//     );
+//   }
+//
+//   grid.innerHTML = visible.map(product => `
+//     <article class="product-card">
+//     {%for product in products%}
+//       <img
+//         class="product-image"
+//         src={{product.image}}
+//         alt={{product.title}}
+//         loading="lazy"
+//         onerror="this.onerror=null;this.src='https://placehold.co/600x400/f5f8f5/198449?text=${encodeURIComponent(product.name)}'"
+//       >
+//
+//       <h3 class="product-title">{{product.title}}</h3>
+//
+//       <div class="price">
+//         {{product.price}} грн <span>/ кг</span>
+//       </div>
+//
+//       <div class="rating">
+//         <span class="stars">★★★★★</span>
+//         <small>{{product.rating}}({{product.reviews}})</small>
+//       </div>
+//
+//       <button class="add-btn" data-add={{product.title}}>
+//         <span>🛒</span> Додати в кошик
+//       </button>
+//       {%endfor%}
+//     </article>
+//   `).join("");
+//
+//   document.getElementById("resultsCount").textContent =
+//     `Знайдено ${visible.length} товарів`;
+//
+//   document.getElementById("emptyState").style.display =
+//     visible.length ? "none" : "block";
+//
+//   grid.style.display = visible.length ? "grid" : "none";
+//
+//   grid.classList.toggle("list-view", listMode);
+// }
+//
+// // Фільтрація за категоріями
+//
+// document.getElementById("categoryList")
+//   .addEventListener("click", event => {
+//     const button = event.target.closest("[data-category]");
+//
+//     if (!button) return;
+//
+//     activeCategory = button.dataset.category;
+//
+//     document.querySelectorAll(".category").forEach(item => {
+//       item.classList.toggle("selected", item === button);
+//     });
+//
+//     renderProducts();
+//   });
+//
+// // Пошук
+//
+// document.getElementById("searchForm")
+//   .addEventListener("submit", event => {
+//     event.preventDefault();
+//     renderProducts();
+//   });
+//
+// searchInput.addEventListener("input", renderProducts);
+//
+// // Фільтр наявності
+//
+// availableOnly.addEventListener("change", renderProducts);
+//
+// // Сортування
+//
+// sortSelect.addEventListener("change", renderProducts);
+//
+// // Перемикання вигляду
+//
+// document.getElementById("gridBtn").addEventListener("click", () => {
+//   listMode = false;
+//
+//   document.getElementById("gridBtn").classList.add("active");
+//   document.getElementById("listBtn").classList.remove("active");
+//
+//   renderProducts();
+// });
+//
+// document.getElementById("listBtn").addEventListener("click", () => {
+//   listMode = true;
+//
+//   document.getElementById("listBtn").classList.add("active");
+//   document.getElementById("gridBtn").classList.remove("active");
+//
+//   renderProducts();
+// });
+//
+// // Додавання до кошика
+//
+// grid.addEventListener("click", event => {
+//   const button = event.target.closest("[data-add]");
+//
+//   if (!button) return;
+//
+//   cart++;
+//
+//   document.getElementById("cartCount").textContent = cart;
+//
+//   const originalText = button.innerHTML;
+//
+//   button.innerHTML = "✓ Додано";
+//
+//   setTimeout(() => {
+//     button.innerHTML = originalText;
+//   }, 900);
+// });
+//
+// // Початкове відображення товарів
+//
+// renderProducts();
 </script>
 
 </body>

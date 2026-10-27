@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Додати продукт — FruitMarket</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 30px 15px;
+            font-family: Arial, sans-serif;
+            background: #f4f8f4;
+            color: #24364b;
+        }
+
+        .form-container {
+            max-width: 550px;
+            margin: 20px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 14px;
+            box-shadow: 0 5px 25px #263c2510;
+        }
+
+        h1 {
+            margin-top: 0;
+            color: #198449;
+            text-align: center;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #78858e;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 17px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #dce5dd;
+            border-radius: 7px;
+            outline: none;
+            font-size: 14px;
+        }
+
+        input:focus {
+            border-color: #198449;
+            box-shadow: 0 0 0 2px #19844915;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 13px;
+            border: none;
+            border-radius: 7px;
+            background: #198449;
+            color: white;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .submit-btn:hover {
+            background: #08743a;
+        }
+
+        .back-link {
+            display: block;
+            margin-top: 18px;
+            text-align: center;
+            color: #198449;
+            text-decoration: none;
+        }
+
+        .message {
+            padding: 12px;
+            margin-bottom: 18px;
+            border-radius: 7px;
+            background: #eaf5ed;
+            color: #126638;
+        }
+        .product-grid {
+    max-width: 1200px;
+    margin: 35px auto;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.product-link {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+    min-width: 0;
+}
+
+.product-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    background: #fff;
+    border: 1px solid #e8eee8;
+    border-radius: 14px;
+    box-shadow: 0 4px 16px rgba(29, 55, 71, 0.06);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 28px rgba(25, 132, 73, 0.13);
+    border-color: #cde5d3;
+}
+
+.product-image {
+    display: block;
+    width: 100%;
+    height: 180px;
+    object-fit: contain;
+    padding: 8px;
+    background: #f7faf5;
+    border-radius: 10px;
+}
+
+.product-title {
+    margin: 15px 0 10px;
+    color: #24364b;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.price {
+    margin-bottom: 12px;
+    color: #198449;
+    font-size: 19px;
+    font-weight: 700;
+}
+
+.price span {
+    color: #87928c;
+    font-size: 12px;
+    font-weight: 400;
+}
+
+.rating {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 16px;
+    color: #ffb600;
+}
+
+.rating small {
+    color: #89949d;
+    font-size: 12px;
+}
+
+.add-btn {
+    width: 100%;
+    margin-top: auto;
+    padding: 12px 8px;
+    border: none;
+    border-radius: 8px;
+    background: #198449;
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.add-btn:hover {
+    background: #08743a;
+}
+
+.add-btn span {
+    margin-right: 5px;
+}
+
+/* АДАПТИВНІСТЬ */
+
+@media (max-width: 1000px) {
+    .product-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 15px;
+        margin: 25px 15px;
+    }
+}
+
+@media (max-width: 700px) {
+    .product-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        margin: 20px 5px;
+    }
+
+    .product-card {
+        padding: 10px;
+    }
+
+    .product-image {
+        height: 135px;
+    }
+
+    .product-title {
+        font-size: 14px;
+    }
+
+    .price {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 360px) {
+    .product-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .product-image {
+        height: 200px;
+    }
+}
+    </style>
+</head>
+
+<body>
+    <div class="form-container">
+        <h1>🍊 Додати продукт</h1>
+        <p class="subtitle">Заповни інформацію про новий фрукт</p>
+
+        {% with messages = get_flashed_messages() %}
+            {% for message in messages %}
+                <div class="message">{{ message }}</div>
+            {% endfor %}
+        {% endwith %}
+
+        <form action="{{ url_for('create_fruit') }}"
+              method="POST">
+
+            <div class="form-group">
+                <label for="title">Назва продукту</label>
+                <input type="text" id="title" name="title"
+                       placeholder="Наприклад, Манго"
+                       required maxlength="100">
+            </div>
+
+            <div class="form-group">
+                <label for="price">Ціна за кг (грн)</label>
+                <input type="number" id="price" name="price"
+                       min="0.01" step="0.01"
+                       placeholder="140" required>
+            </div>
+
+            <div class="form-group">
+                <label for="rating">Рейтинг</label>
+                <input type="number" id="rating" name="rating"
+                       min="0" max="5" step="0.1"
+                       value="5" required>
+            </div>
+
+            <div class="form-group">
+                <label for="reviews">Кількість відгуків</label>
+                <input type="number" id="reviews" name="reviews"
+                       min="0" value="0" required>
+            </div>
+
+            <div class="form-group">
+                <label for="image">Посилання на зображення</label>
+                <input type="url" id="image" name="image"
+                       placeholder="https://example.com/fruit.jpg"
+                       required>
+            </div>
+
+            <button type="submit" class="submit-btn">
+                Додати продукт
+            </button>
+        </form>
+
+
+        <a href="{{ url_for('fruits') }}" class="back-link">
+            ← Повернутися до каталогу
+        </a>
+    </div>
+<div class="product-grid" id="productGrid">
+      {%for product in products%}
+
+        <a href="{{ url_for('fruit', id=product.id) }}" class="product-link">
+         <article class="product-card" >
+          <img
+            class="product-image"
+            src="{{ product.image }}"
+            alt={{product.title}}
+            loading="lazy"
+            onerror="this.onerror=null;this.src={ product:['image'] }"
+          >
+
+          <h3 class="product-title">{{product.title}}</h3>
+
+          <div class="price">
+            {{product.price}} грн <span>/ кг</span>
+          </div>
+
+          <div class="rating">
+            <span class="stars">★★★★★</span>
+            <small>{{product.rating}}({{product.reviews}})</small>
+          </div>
+
+          <button class="add-btn" data-add={{product.title}}>
+            <span>🛒</span> Додати в кошик
+          </button>
+        </article>
+          </a>
+          {%endfor%}
+
+      </div>
+</body>
+</html>
